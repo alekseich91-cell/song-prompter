@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -51,8 +54,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: ${{ matrix.args }}
-          tagName: app-v__VERSION__
-          releaseName: Song Prompter v__VERSION__
-          releaseBody: Song Prompter desktop application
+          tagName: v__VERSION__
+          releaseName: Mini Prompter Lunia v__VERSION__
+          releaseBody: Mini Prompter Lunia desktop application
           releaseDraft: true
           prerelease: false
