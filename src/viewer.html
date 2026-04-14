@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Prompter - Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="viewer-mode">
+    <div id="app">
+        <div id="viewerSongList">
+            <div class="viewer-song-header">Список песен</div>
+            <div id="viewerSongListItems"></div>
+        </div>
+
+        <div id="fullscreenHint">Нажмите F для полноэкранного режима</div>
+
+        <div id="urgentMessageDisplay">
+            <div id="urgentMessageText"></div>
+        </div>
+
+        <div id="center">
+            <div id="lyricsContainer">
+                <div id="lyricsText"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="viewer.js"></script>
+</body>
+</html>
