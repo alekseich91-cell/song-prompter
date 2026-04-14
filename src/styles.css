@@ -569,7 +569,7 @@
             margin-top: 8px;
         }
 
-        /* Модальный редактор текста */
+        /* Модальный редактор текста — на весь экран */
         #lyricsEditorOverlay {
             display: none;
             position: fixed;
@@ -577,9 +577,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: #000;
             z-index: 9999;
-            padding: 40px;
+            padding: 16px 24px;
         }
         #lyricsEditorOverlay.visible {
             display: flex;
@@ -589,30 +589,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            color: #ccc;
-            font-size: 14px;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 13px;
+            flex-shrink: 0;
         }
         #lyricsEditorOverlay textarea {
             flex: 1;
             width: 100%;
-            background: #111;
-            border: 1px solid #444;
+            background: #0a0a0a;
+            border: 1px solid #333;
             color: #fff;
             border-radius: 6px;
-            padding: 16px;
+            padding: 20px;
             font-family: inherit;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 18px;
+            line-height: 1.8;
             resize: none;
         }
         #lyricsEditorOverlay .editor-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 12px;
+            margin-top: 10px;
             justify-content: flex-end;
+            flex-shrink: 0;
         }
         #lyricsEditorOverlay button {
-            padding: 8px 20px;
+            padding: 10px 24px;
             font-size: 14px;
         }

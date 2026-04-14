@@ -1,6 +1,7 @@
 var tauriEvent = window.__TAURI__.event;
 var emitTo = tauriEvent.emitTo;
 var listen = tauriEvent.listen;
+var getCurrentWindow = window.__TAURI__.window.getCurrentWindow;
 
 var lyricsContainer = document.getElementById('lyricsContainer');
 var lyricsText = document.getElementById('lyricsText');
@@ -12,22 +13,37 @@ var viewerSongListItemsEl = document.getElementById('viewerSongListItems');
 var urgentMessageTimeout = null;
 
 // --- Fullscreen ---
-// The viewer opens as a borderless window covering the entire monitor.
-// No native fullscreen (avoids macOS Spaces black-screen issue).
-// Hide the fullscreen hint immediately since we're already "fullscreen".
-document.body.classList.add('is-fullscreen');
+// Enter native fullscreen to hide macOS menu bar.
+// The window is already on the correct monitor (Rust picks the other one).
+(async function enterFullscreen() {
+    var appWindow = getCurrentWindow();
+    await appWindow.setFullscreen(true);
+    document.body.classList.add('is-fullscreen');
+})();
 
-// F key — no-op (window already covers the monitor)
+// Hide hint since we auto-fullscreen
+if (fullscreenHint) {
+    fullscreenHint.style.display = 'none';
+}
+
+// F key toggles fullscreen
 document.addEventListener('keydown', function(e) {
     var key = e.key;
     if (key === 'f' || key === 'F' || key === '\u0430' || key === '\u0410') {
         e.preventDefault();
+        (async function() {
+            var appWindow = getCurrentWindow();
+            var isFs = await appWindow.isFullscreen();
+            await appWindow.setFullscreen(!isFs);
+            document.body.classList.toggle('is-fullscreen', !isFs);
+        })();
     }
 });
 
-// Hide hint (already fullscreen-like)
-if (fullscreenHint) {
-    fullscreenHint.style.display = 'none';
+// --- Bottom padding (must match main window for scroll sync) ---
+function applyExtraBottomPadding() {
+    var containerHeight = lyricsContainer.clientHeight;
+    lyricsText.style.paddingBottom = Math.floor(containerHeight / 2) + 'px';
 }
 
 // --- Urgent messages ---
@@ -95,6 +111,8 @@ listen('update-song', function(event) {
             }
         }
     }
+    // Apply same bottom padding as main window for scroll fraction sync
+    applyExtraBottomPadding();
     if (typeof msg.scrollFraction === 'number') {
         var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
         lyricsContainer.scrollTop = msg.scrollFraction * maxScroll;
@@ -115,6 +133,27 @@ listen('scroll', function(event) {
     }
 });
 
+listen('enter-fullscreen', async function() {
+    var appWindow = getCurrentWindow();
+    await appWindow.setFullscreen(true);
+    document.body.classList.add('is-fullscreen');
+});
+
+listen('exit-fullscreen', async function() {
+    var appWindow = getCurrentWindow();
+    await appWindow.setFullscreen(false);
+    document.body.classList.remove('is-fullscreen');
+});
+
+listen('toggle-fullscreen', function() {
+    (async function() {
+        var appWindow = getCurrentWindow();
+        var isFs = await appWindow.isFullscreen();
+        await appWindow.setFullscreen(!isFs);
+        document.body.classList.toggle('is-fullscreen', !isFs);
+    })();
+});
+
 listen('urgent-message', function(event) {
     var msg = event.payload;
     showUrgentMessage(msg.text, msg.duration);
@@ -127,5 +166,6 @@ listen('hide-urgent', function() {
 // --- Init ---
 
 (function init() {
+    applyExtraBottomPadding();
     emitTo('main', 'viewer-ready', {});
 })();

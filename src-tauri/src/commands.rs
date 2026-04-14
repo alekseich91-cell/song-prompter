@@ -74,9 +74,9 @@ pub fn open_viewer_on_monitor(app: tauri::AppHandle, monitor_index: usize) -> Re
     let pos = monitor.position();
     let size = monitor.size();
 
-    // Use borderless window covering the entire monitor instead of native fullscreen.
-    // Native fullscreen on macOS creates a Space which hides the main window behind
-    // a black overlay — this avoids that issue entirely.
+    // Position on target monitor, then JS enters native fullscreen.
+    // Native fullscreen hides macOS menu bar. Since the viewer opens on a
+    // different monitor from the main window, no Space conflict occurs.
     tauri::WebviewWindowBuilder::new(
         &app,
         "viewer",
@@ -86,7 +86,6 @@ pub fn open_viewer_on_monitor(app: tauri::AppHandle, monitor_index: usize) -> Re
     .position(pos.x as f64, pos.y as f64)
     .inner_size(size.width as f64, size.height as f64)
     .decorations(false)
-    .always_on_top(true)
     .build()
     .map_err(|e| e.to_string())?;
 
