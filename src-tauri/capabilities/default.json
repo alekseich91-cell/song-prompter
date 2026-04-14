@@ -1,0 +1,17 @@
+{
+  "identifier": "default",
+  "description": "Song Prompter permissions",
+  "windows": ["main", "viewer"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-create",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-is-fullscreen",
+    "core:window:allow-set-focus",
+    "core:window:allow-available-monitors",
+    "core:window:allow-primary-monitor",
+    "core:window:allow-close",
+    "core:event:default",
+    "core:webview:default"
+  ]
+}
