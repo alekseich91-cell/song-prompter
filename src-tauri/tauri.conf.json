@@ -1,7 +1,7 @@
 {
   "productName": "Song Prompter",
   "version": "1.0.0",
-  "identifier": "com.song-prompter.app",
+  "identifier": "com.songprompter.desktop",
   "build": {
     "frontendDist": "../src",
     "beforeDevCommand": "",
