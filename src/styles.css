@@ -597,6 +597,8 @@
         #lyricsEditorOverlay textarea {
             width: 100%;
             height: calc(100vh - 100px);
+            max-height: none;
+            min-height: 200px;
             background: #0a0a0a;
             border: 1px solid #333;
             color: #fff;
