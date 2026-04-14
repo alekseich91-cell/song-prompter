@@ -306,12 +306,17 @@ function formatDuration(sec) {
 
 // ---------- Прокрутка ----------
 
+function getTextContentHeight() {
+    // Text height WITHOUT dynamic bottom padding — this value is identical
+    // on both screens (same text, same container width, same font/lineHeight).
+    var pad = parseInt(lyricsText.style.paddingBottom) || 0;
+    return lyricsText.offsetHeight - pad;
+}
+
 function getScrollFraction() {
-    // Sync by position relative to text height, not container scroll range.
-    // This ensures matching position regardless of container/padding differences.
-    var textHeight = lyricsText.offsetHeight;
-    if (textHeight <= 0) return 0;
-    return lyricsContainer.scrollTop / textHeight;
+    var contentH = getTextContentHeight();
+    if (contentH <= 0) return 0;
+    return lyricsContainer.scrollTop / contentH;
 }
 
 function getEffectiveSpeed() {

@@ -114,10 +114,12 @@ listen('update-song', function(event) {
             }
         }
     }
-    // Apply same bottom padding as main window for scroll fraction sync
+    // Apply bottom padding for this viewer's container height
     applyExtraBottomPadding();
     if (typeof msg.scrollFraction === 'number') {
-        lyricsContainer.scrollTop = msg.scrollFraction * lyricsText.offsetHeight;
+        var pad = parseInt(lyricsText.style.paddingBottom) || 0;
+        var contentH = lyricsText.offsetHeight - pad;
+        lyricsContainer.scrollTop = msg.scrollFraction * contentH;
     }
     if (msg.showSongList) {
         document.body.classList.add('show-song-list');
@@ -130,7 +132,9 @@ listen('update-song', function(event) {
 listen('scroll', function(event) {
     var msg = event.payload;
     if (typeof msg.scrollFraction === 'number') {
-        lyricsContainer.scrollTop = msg.scrollFraction * lyricsText.offsetHeight;
+        var pad = parseInt(lyricsText.style.paddingBottom) || 0;
+        var contentH = lyricsText.offsetHeight - pad;
+        lyricsContainer.scrollTop = msg.scrollFraction * contentH;
     }
 });
 
