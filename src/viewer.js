@@ -101,7 +101,10 @@ listen('update-song', function(event) {
     if (msg.style) {
         lyricsText.style.fontSize = (msg.style.fontSize || 32) + 'px';
         lyricsText.style.lineHeight = msg.style.lineHeight || 0.8;
-        lyricsContainer.style.maxWidth = (msg.style.widthPercent || 100) + '%';
+        // Use exact pixel width from main window so text wraps identically
+        if (msg.style.containerWidthPx) {
+            lyricsContainer.style.maxWidth = msg.style.containerWidthPx + 'px';
+        }
         if (msg.style.textAlign) {
             lyricsText.style.textAlign = msg.style.textAlign;
             if (msg.style.textAlign === 'left') {

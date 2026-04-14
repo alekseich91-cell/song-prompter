@@ -1180,7 +1180,8 @@ function syncToViewer() {
             fontSize: song.fontSize,
             lineHeight: song.lineHeight,
             widthPercent: song.textWidthPercent,
-            textAlign: song.textAlign
+            textAlign: song.textAlign,
+            containerWidthPx: lyricsContainer.clientWidth
         },
         scrollFraction: getScrollFraction(),
         showSongList: showSongListOnViewer,
