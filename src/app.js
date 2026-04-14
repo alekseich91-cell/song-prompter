@@ -690,6 +690,51 @@ importTxtBtn.addEventListener('click', async function() {
     }
 });
 
+// ---------- Модальный редактор текста ----------
+var lyricsEditorOverlay = document.getElementById('lyricsEditorOverlay');
+var lyricsEditorArea = document.getElementById('lyricsEditorArea');
+var openEditorBtn = document.getElementById('openEditorBtn');
+var editorApplyBtn = document.getElementById('editorApplyBtn');
+var editorCancelBtn = document.getElementById('editorCancelBtn');
+
+if (openEditorBtn) {
+    openEditorBtn.addEventListener('click', function() {
+        lyricsEditorArea.value = lyricsInput.value;
+        lyricsEditorOverlay.classList.add('visible');
+        lyricsEditorArea.focus();
+    });
+}
+
+if (editorApplyBtn) {
+    editorApplyBtn.addEventListener('click', function() {
+        lyricsInput.value = lyricsEditorArea.value;
+        var song = songs[selectedSongIndex];
+        if (song) {
+            song.text = lyricsEditorArea.value || '';
+            song.played = false;
+            lyricsText.textContent = song.text;
+            lyricsContainer.scrollTop = 0;
+            renderSongList();
+            syncToViewer();
+            scheduleAutoSave();
+        }
+        lyricsEditorOverlay.classList.remove('visible');
+    });
+}
+
+if (editorCancelBtn) {
+    editorCancelBtn.addEventListener('click', function() {
+        lyricsEditorOverlay.classList.remove('visible');
+    });
+}
+
+// Esc закрывает редактор
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lyricsEditorOverlay.classList.contains('visible')) {
+        lyricsEditorOverlay.classList.remove('visible');
+    }
+});
+
 // ---------- Проект: экспорт / импорт ----------
 
 function exportProjectData() {

@@ -21,6 +21,7 @@
         /* Левый сайдбар — список песен */
         #leftSidebar {
             width: 260px;
+            flex-shrink: 0;
             border-right: 1px solid #333;
             padding: 10px;
             display: flex;
@@ -177,6 +178,7 @@
             width: 320px;
             min-width: 250px;
             max-width: 600px;
+            flex-shrink: 0;
             border-left: 1px solid #333;
             padding: 10px;
             display: flex;
@@ -186,10 +188,7 @@
             font-size: 13px;
             overflow-y: auto;
             resize: horizontal;
-            direction: rtl; /* resize handle on left side */
-        }
-        #rightSidebar > * {
-            direction: ltr; /* restore text direction for children */
+            overflow-x: hidden;
         }
 
         .panel {
@@ -567,4 +566,52 @@
             font-weight: normal;
             opacity: 0.7;
             margin-top: 8px;
+        }
+
+        /* Модальный редактор текста */
+        #lyricsEditorOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            padding: 40px;
+        }
+        #lyricsEditorOverlay.visible {
+            display: flex;
+            flex-direction: column;
+        }
+        #lyricsEditorOverlay .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        #lyricsEditorOverlay textarea {
+            flex: 1;
+            width: 100%;
+            background: #111;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+        }
+        #lyricsEditorOverlay .editor-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+        #lyricsEditorOverlay button {
+            padding: 8px 20px;
+            font-size: 14px;
         }
