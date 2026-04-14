@@ -1,3 +1,209 @@
 <!DOCTYPE html>
-<html><head><title>Song Prompter</title></head>
-<body><h1>Song Prompter</h1></body></html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Prompter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- Левый список песен -->
+    <div id="leftSidebar">
+        <div class="sidebar-header">
+            <span>Песни</span>
+            <button id="addSongBtn" title="Добавить песню">+</button>
+        </div>
+        <div id="songList"></div>
+        <button id="resetPlayedBtn" title="Сбросить отметки проигранных песен">Сбросить проигранные</button>
+    </div>
+
+    <!-- Список песен для viewer (второго экрана) -->
+    <div id="viewerSongList">
+        <div class="viewer-song-header">Список песен</div>
+        <div id="viewerSongListItems"></div>
+    </div>
+
+    <!-- Подсказка для полноэкранного режима на втором экране -->
+    <div id="fullscreenHint">Нажмите F для полноэкранного режима</div>
+
+    <!-- Экстренное сообщение на втором экране -->
+    <div id="urgentMessageDisplay">
+        <div id="urgentMessageText"></div>
+    </div>
+
+    <!-- Центральная зона с прокручиваемым текстом -->
+    <div id="center">
+        <div id="lyricsContainer">
+            <div id="lyricsText"></div>
+        </div>
+    </div>
+
+    <!-- Правый сайдбар с управлением -->
+    <div id="rightSidebar">
+            <!-- Выбор языка -->
+            <div class="panel">
+                <label>
+                    Язык / Language:
+                    <select id="languageSelect">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </label>
+            </div>
+        <!-- Общие настройки песни -->
+        <div class="panel">
+            <div class="panel-title" id="songPanelTitle">Песня</div>
+            <label id="songTitleLabel">Название:<input type="text" id="songTitleInput" placeholder="Название песни">
+            </label>
+            <div class="btn-row">
+                <button id="deleteSongBtn">Удалить песню</button>
+            </div>
+            <div class="small-note" id="songDeleteNote">Удалить можно любую, кроме последней — она будет просто очищена.</div>
+        </div>
+
+        <!-- Настройки отображения -->
+        <div class="panel">
+            <div class="panel-title" id="displayPanelTitle">Отображение</div>
+
+            <label>Размер шрифта <span id="fontSizeLabel" class="value-label">32px</span>
+                <input type="range" id="fontSizeRange" min="16" max="72" step="2">
+            </label>
+
+            <label>Межстрочный интервал <span id="lineHeightLabel" class="value-label">0.8</span>
+                <!-- 1–25 -> 0.1–2.5 -->
+                <input type="range" id="lineHeightRange" min="1" max="25" step="1">
+            </label>
+
+            <label>Ширина текста <span id="textWidthLabel" class="value-label">100%</span>
+                <input type="range" id="textWidthRange" min="40" max="100" step="5">
+            </label>
+            <div class="small-note" id="textWidthNote">Регулирует ширину области текста по центру экрана.</div>
+            <!-- Выравнивание текста -->
+            <label id="textAlignLabelContainer">
+                <span id="textAlignLabel">Выравнивание</span>
+                <select id="textAlignSelect">
+                    <option value="center" id="textAlignCenterOption">По центру</option>
+                    <option value="left" id="textAlignLeftOption">По левому краю</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- Прокрутка -->
+        <div class="panel">
+            <div class="panel-title" id="scrollPanelTitle">Прокрутка</div>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="scrollMode" value="speed" checked="">
+                    <span id="scrollSpeedModeLabel">По скорости</span>
+                </label>
+                <label>
+                    <input type="radio" name="scrollMode" value="duration">
+                    <span id="scrollDurationModeLabel">По длительности</span>
+                </label>
+            </div>
+
+            <div id="speedControls">
+                <label>Скорость прокрутки <span id="speedLabel" class="value-label">30 px/s</span>
+                    <input type="range" id="speedRange" min="1" max="400" step="1">
+                </label>
+                <div class="small-note" id="scrollSpeedNote">Чем больше значение, тем быстрее движется текст.</div>
+            </div>
+
+            <div id="durationControls" style="display:none;">
+                <label>Длительность песни <input type="text" id="durationInput" placeholder="мм:сс или секунды">
+                </label>
+                <div class="small-note">Например: <b>3:45</b> или <b>225</b>.</div>
+            </div>
+
+            <div class="btn-row">
+                <button id="startBtn" class="primary">Старт (Enter)</button>
+                <button id="pauseBtn">Пауза / Продолжить (Space)</button>
+                <button id="stopBtn">Стоп</button>
+                <button id="topBtn">В начало</button>
+                <button id="secondScreenBtn">Второй экран</button>
+            </div>
+            <div class="small-note" id="fullscreenNote">Полноэкранный режим — клавиша <b>F</b> или <b>А</b> (русская раскладка).</div>
+        </div>
+
+        <!-- Второй экран настройки -->
+        <div class="panel" id="secondScreenPanel">
+            <div class="panel-title" id="secondScreenPanelTitle">Второй экран</div>
+            <label class="checkbox-label">
+                <input type="checkbox" id="showSongListCheckbox">
+                <span id="showSongListLabel">Показать список песен</span>
+            </label>
+            <div class="small-note" id="showSongListNote">На втором экране будет отображаться список песен слева от текста.</div>
+        </div>
+
+        <!-- Экстренное сообщение -->
+        <div class="panel" id="urgentMessagePanel">
+            <div class="panel-title" id="urgentMessagePanelTitle">Экстренное сообщение</div>
+            <textarea id="urgentMessageInput" placeholder="Введите срочное сообщение..." rows="2"></textarea>
+            <div class="btn-row">
+                <button id="sendUrgentBtn" class="urgent-btn">Отправить</button>
+                <button id="hideUrgentBtn">Убрать сообщение</button>
+            </div>
+            <div class="small-note" id="urgentMessageNote">Сообщение появится на втором экране на 30 сек.</div>
+        </div>
+
+        <!-- Таймкод -->
+        <div class="panel" id="timecodePanel">
+            <div class="panel-title" id="timecodePanelTitle">Таймкод</div>
+            <label>
+                <span id="audioInputLabel">Аудио вход:</span>
+                <select id="audioInputSelect"></select>
+            </label>
+            <div id="timecodeClock" style="font-size:20px; text-align:center; margin-top:6px;">—</div>
+        </div>
+
+        <!-- Таймлайн -->
+        <div class="panel" id="timelinePanel">
+            <div class="panel-title" id="timelinePanelTitle">Таймлайн</div>
+            <div id="markersContainer"></div>
+            <div class="btn-row">
+                <button id="addStartMarkerBtn">Добавить старт</button>
+                <button id="addPauseMarkerBtn">Добавить паузу</button>
+                <button id="addSpeedMarkerBtn">Добавить скорость</button>
+            </div>
+        </div>
+
+        <!-- Текст песни -->
+        <div class="panel">
+            <div class="panel-title" id="lyricsPanelTitle">Текст песни</div>
+            <textarea id="lyricsInput" placeholder="Введите текст песни здесь..."></textarea>
+            <div class="btn-row">
+                <button id="applyLyricsBtn" class="primary">Обновить текст</button>
+                <button id="importTxtBtn">Импорт TXT</button>
+            </div>
+            <div class="small-note" id="lyricsNote">Русский текст поддерживается (UTF-8).<br>Для .doc/.docx лучше предварительно сохранить как .txt.</div>
+        </div>
+
+        <!-- Проект -->
+        <div class="panel">
+            <div class="panel-title" id="projectPanelTitle">Проект</div>
+            <div class="btn-row">
+                <button id="exportProjectBtn">Экспорт проекта</button>
+                <button id="importProjectBtn">Импорт проекта</button>
+            </div>
+            <div class="small-note" id="projectNote">Экспортирует все песни и настройки в один JSON-файл.</div>
+        </div>
+
+        <!-- Триггеры песен -->
+        <div class="panel" id="triggersPanel">
+            <div class="panel-title" id="triggersPanelTitle">Привязка песен</div>
+            <div id="triggersContainer"></div>
+            <div class="btn-row">
+                <button id="addTriggerBtn">Добавить привязку</button>
+            </div>
+        </div>
+
+        <!-- Любовная подпись -->
+        <div id="loveNote" style="text-align:center; font-size:11px; color:#666; margin-top:auto;">С любовью из России</div>
+    </div>
+</div>
+
+    <script src="ltc-decoder.js"></script>
+    <script src="i18n.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
