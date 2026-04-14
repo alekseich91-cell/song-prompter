@@ -307,9 +307,11 @@ function formatDuration(sec) {
 // ---------- Прокрутка ----------
 
 function getScrollFraction() {
-    var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
-    if (maxScroll <= 0) return 0;
-    return lyricsContainer.scrollTop / maxScroll;
+    // Sync by position relative to text height, not container scroll range.
+    // This ensures matching position regardless of container/padding differences.
+    var textHeight = lyricsText.offsetHeight;
+    if (textHeight <= 0) return 0;
+    return lyricsContainer.scrollTop / textHeight;
 }
 
 function getEffectiveSpeed() {

@@ -117,8 +117,7 @@ listen('update-song', function(event) {
     // Apply same bottom padding as main window for scroll fraction sync
     applyExtraBottomPadding();
     if (typeof msg.scrollFraction === 'number') {
-        var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
-        lyricsContainer.scrollTop = msg.scrollFraction * maxScroll;
+        lyricsContainer.scrollTop = msg.scrollFraction * lyricsText.offsetHeight;
     }
     if (msg.showSongList) {
         document.body.classList.add('show-song-list');
@@ -131,8 +130,7 @@ listen('update-song', function(event) {
 listen('scroll', function(event) {
     var msg = event.payload;
     if (typeof msg.scrollFraction === 'number') {
-        var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
-        lyricsContainer.scrollTop = msg.scrollFraction * maxScroll;
+        lyricsContainer.scrollTop = msg.scrollFraction * lyricsText.offsetHeight;
     }
 });
 
