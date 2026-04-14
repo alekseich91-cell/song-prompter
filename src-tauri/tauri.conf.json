@@ -1,6 +1,6 @@
 {
   "productName": "Mini Prompter Lunia",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "identifier": "com.songprompter.desktop",
   "build": {
     "frontendDist": "../src",
