@@ -143,6 +143,10 @@ listen('exit-fullscreen', async function() {
     document.body.classList.remove('is-fullscreen');
 });
 
+listen('toggle-fullscreen', function() {
+    toggleFullscreen();
+});
+
 listen('urgent-message', function(event) {
     var msg = event.payload;
     showUrgentMessage(msg.text, msg.duration);

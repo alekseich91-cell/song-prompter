@@ -1125,11 +1125,9 @@ function isEditingElement(target) {
 }
 
 async function toggleFullScreen() {
-    var appWindow = getCurrentWindow();
-    var isFs = await appWindow.isFullscreen();
-    await appWindow.setFullscreen(!isFs);
+    // Only toggle fullscreen on viewer — main window stays windowed for controls
     if (viewerOpen) {
-        emitTo('viewer', isFs ? 'exit-fullscreen' : 'enter-fullscreen', {});
+        emitTo('viewer', 'toggle-fullscreen', {});
     }
 }
 
