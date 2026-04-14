@@ -174,7 +174,9 @@
 
         /* Правый сайдбар — управление */
         #rightSidebar {
-            width: 280px;
+            width: 320px;
+            min-width: 250px;
+            max-width: 600px;
             border-left: 1px solid #333;
             padding: 10px;
             display: flex;
@@ -182,7 +184,12 @@
             gap: 10px;
             background: #050505;
             font-size: 13px;
-            overflow-y: auto; /* прокрутка всего столбца */
+            overflow-y: auto;
+            resize: horizontal;
+            direction: rtl; /* resize handle on left side */
+        }
+        #rightSidebar > * {
+            direction: ltr; /* restore text direction for children */
         }
 
         .panel {

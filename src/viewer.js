@@ -1,7 +1,6 @@
 var tauriEvent = window.__TAURI__.event;
 var emitTo = tauriEvent.emitTo;
 var listen = tauriEvent.listen;
-var getCurrentWindow = window.__TAURI__.window.getCurrentWindow;
 
 var lyricsContainer = document.getElementById('lyricsContainer');
 var lyricsText = document.getElementById('lyricsText');
@@ -12,36 +11,24 @@ var viewerSongListItemsEl = document.getElementById('viewerSongListItems');
 
 var urgentMessageTimeout = null;
 
-// --- Fullscreen management ---
+// --- Fullscreen ---
+// The viewer opens as a borderless window covering the entire monitor.
+// No native fullscreen (avoids macOS Spaces black-screen issue).
+// Hide the fullscreen hint immediately since we're already "fullscreen".
+document.body.classList.add('is-fullscreen');
 
-async function updateFullscreenState() {
-    var appWindow = getCurrentWindow();
-    var isFs = await appWindow.isFullscreen();
-    document.body.classList.toggle('is-fullscreen', isFs);
-}
-
-async function toggleFullscreen() {
-    var appWindow = getCurrentWindow();
-    var isFs = await appWindow.isFullscreen();
-    await appWindow.setFullscreen(!isFs);
-    document.body.classList.toggle('is-fullscreen', !isFs);
-}
-
-if (fullscreenHint) {
-    fullscreenHint.addEventListener('click', async function() {
-        var appWindow = getCurrentWindow();
-        await appWindow.setFullscreen(true);
-        document.body.classList.add('is-fullscreen');
-    });
-}
-
+// F key — no-op (window already covers the monitor)
 document.addEventListener('keydown', function(e) {
     var key = e.key;
     if (key === 'f' || key === 'F' || key === '\u0430' || key === '\u0410') {
         e.preventDefault();
-        toggleFullscreen();
     }
 });
+
+// Hide hint (already fullscreen-like)
+if (fullscreenHint) {
+    fullscreenHint.style.display = 'none';
+}
 
 // --- Urgent messages ---
 
@@ -117,11 +104,6 @@ listen('update-song', function(event) {
     } else {
         document.body.classList.remove('show-song-list');
     }
-    if (fullscreenHint && msg.lang) {
-        fullscreenHint.textContent = msg.lang === 'ru'
-            ? 'Нажмите F для полноэкранного режима'
-            : 'Press F for fullscreen mode';
-    }
 });
 
 listen('scroll', function(event) {
@@ -129,22 +111,6 @@ listen('scroll', function(event) {
     if (typeof msg.scrollTop === 'number') {
         lyricsContainer.scrollTop = msg.scrollTop;
     }
-});
-
-listen('enter-fullscreen', async function() {
-    var appWindow = getCurrentWindow();
-    await appWindow.setFullscreen(true);
-    document.body.classList.add('is-fullscreen');
-});
-
-listen('exit-fullscreen', async function() {
-    var appWindow = getCurrentWindow();
-    await appWindow.setFullscreen(false);
-    document.body.classList.remove('is-fullscreen');
-});
-
-listen('toggle-fullscreen', function() {
-    toggleFullscreen();
 });
 
 listen('urgent-message', function(event) {
@@ -158,7 +124,6 @@ listen('hide-urgent', function() {
 
 // --- Init ---
 
-(async function init() {
-    await updateFullscreenState();
+(function init() {
     emitTo('main', 'viewer-ready', {});
 })();

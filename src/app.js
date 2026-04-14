@@ -526,17 +526,40 @@ async function openSecondScreen() {
     if (viewerOpen) return;
     try {
         var monitors = await invoke('list_monitors');
+        if (monitors.length === 0) return;
         var monitorIndex = 0;
-        if (monitors.length === 2) {
-            monitorIndex = 1;
-        } else if (monitors.length > 2) {
-            var t = translations[currentLang];
-            var names = monitors.map(function(m, i) { return (i+1) + ': ' + m.name + ' (' + m.width + 'x' + m.height + ')'; }).join('\n');
-            var choice = prompt(t.chooseMonitor + '\n' + names, '2');
-            if (!choice) return;
-            monitorIndex = parseInt(choice, 10) - 1;
-            if (isNaN(monitorIndex) || monitorIndex < 0 || monitorIndex >= monitors.length) monitorIndex = 1;
+
+        if (monitors.length === 1) {
+            monitorIndex = 0;
+        } else {
+            // Find the first monitor that is NOT the main window's monitor
+            var otherIdx = -1;
+            for (var i = 0; i < monitors.length; i++) {
+                if (!monitors[i].is_main) { otherIdx = i; break; }
+            }
+            if (otherIdx >= 0) {
+                monitorIndex = otherIdx;
+            } else {
+                monitorIndex = 0;
+            }
+
+            // If 3+ monitors, let user pick (default to the auto-detected other)
+            if (monitors.length > 2) {
+                var t = translations[currentLang];
+                var names = monitors.map(function(m, i) {
+                    var label = (i+1) + ': ' + m.name + ' (' + m.width + 'x' + m.height + ')';
+                    if (m.is_main) label += ' [main]';
+                    return label;
+                }).join('\n');
+                var choice = prompt(t.chooseMonitor + '\n' + names, String(monitorIndex + 1));
+                if (!choice) return;
+                monitorIndex = parseInt(choice, 10) - 1;
+                if (isNaN(monitorIndex) || monitorIndex < 0 || monitorIndex >= monitors.length) {
+                    monitorIndex = otherIdx >= 0 ? otherIdx : 0;
+                }
+            }
         }
+
         await invoke('open_viewer_on_monitor', { monitorIndex: monitorIndex });
         viewerOpen = true;
         document.body.classList.add('two-window-mode');
