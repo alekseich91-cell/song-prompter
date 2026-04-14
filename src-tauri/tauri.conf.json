@@ -1,5 +1,5 @@
 {
-  "productName": "Song Prompter",
+  "productName": "Mini Prompter Lunia",
   "version": "1.0.0",
   "identifier": "com.songprompter.desktop",
   "build": {
@@ -12,7 +12,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Song Prompter",
+        "title": "Мини промптер Lunia",
         "width": 1200,
         "height": 800,
         "resizable": true
