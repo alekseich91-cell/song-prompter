@@ -306,6 +306,12 @@ function formatDuration(sec) {
 
 // ---------- Прокрутка ----------
 
+function getScrollFraction() {
+    var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+    if (maxScroll <= 0) return 0;
+    return lyricsContainer.scrollTop / maxScroll;
+}
+
 function getEffectiveSpeed() {
     var song = songs[selectedSongIndex];
     if (!song) return 30;
@@ -353,7 +359,7 @@ function scrollStep(timestamp) {
 
         // синхронизируем второй экран
         if (viewerOpen) {
-            emitTo('viewer', 'scroll', { scrollTop: lyricsContainer.scrollTop });
+            emitTo('viewer', 'scroll', { scrollFraction: getScrollFraction() });
         }
     }
 
@@ -370,7 +376,7 @@ function stopScroll() {
     lyricsContainer.scrollTop = 0;
     // sync viewer
     if (viewerOpen) {
-        emitTo('viewer', 'scroll', { scrollTop: 0 });
+        emitTo('viewer', 'scroll', { scrollFraction: 0 });
     }
 }
 
@@ -508,14 +514,14 @@ stopBtn.addEventListener('click', stopScroll);
 topBtn.addEventListener('click', function() {
     lyricsContainer.scrollTop = 0;
     if (viewerOpen) {
-        emitTo('viewer', 'scroll', { scrollTop: 0 });
+        emitTo('viewer', 'scroll', { scrollFraction: 0 });
     }
 });
 
 // при ручной прокрутке синхронизуем второй экран
 lyricsContainer.addEventListener('scroll', function() {
     if (viewerOpen) {
-        emitTo('viewer', 'scroll', { scrollTop: lyricsContainer.scrollTop });
+        emitTo('viewer', 'scroll', { scrollFraction: getScrollFraction() });
     }
 });
 
@@ -1176,7 +1182,7 @@ function syncToViewer() {
             widthPercent: song.textWidthPercent,
             textAlign: song.textAlign
         },
-        scrollTop: lyricsContainer.scrollTop,
+        scrollFraction: getScrollFraction(),
         showSongList: showSongListOnViewer,
         songList: songListData,
         lang: currentLang

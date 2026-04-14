@@ -95,8 +95,9 @@ listen('update-song', function(event) {
             }
         }
     }
-    if (typeof msg.scrollTop === 'number') {
-        lyricsContainer.scrollTop = msg.scrollTop;
+    if (typeof msg.scrollFraction === 'number') {
+        var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+        lyricsContainer.scrollTop = msg.scrollFraction * maxScroll;
     }
     if (msg.showSongList) {
         document.body.classList.add('show-song-list');
@@ -108,8 +109,9 @@ listen('update-song', function(event) {
 
 listen('scroll', function(event) {
     var msg = event.payload;
-    if (typeof msg.scrollTop === 'number') {
-        lyricsContainer.scrollTop = msg.scrollTop;
+    if (typeof msg.scrollFraction === 'number') {
+        var maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+        lyricsContainer.scrollTop = msg.scrollFraction * maxScroll;
     }
 });
 
